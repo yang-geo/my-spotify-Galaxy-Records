@@ -316,17 +316,7 @@ function App() {
             ))}
           </div>
 
-          {/* 修正：删掉了之前暴露在外面的那个 bottom-bar */}
-
           {/* 只有管理员能看到添加按钮 */}
-          {/* {isAdmin && (
-            <div className="bottom-bar">
-              <button className="add-album-btn" onClick={() => setIsAddModalOpen(true)}>
-                <span className="btn-icon">+</span>
-                <span className="btn-text">Add Album</span>
-              </button>
-            </div>
-          )} */}
           {isAdmin && (
             <div className="bottom-bar">
               <button className="add-album-btn" onClick={() => setIsAddModalOpen(true)}>
@@ -345,10 +335,10 @@ function App() {
               <div className="note-content" onClick={(e) => e.stopPropagation()}>
                 <div className="note-inner">
 
-                <p>在武汉的时候，我有一台老旧的松下 CD 机，一叠 CD。里头有林生祥、有 Chinese Football、有 Blur。全部放在桌上的架子里，没有红心、没有评论、没有播放量，也没有排名。</p>
-                <p>我有点怀念从架子上抽出 CD 塞进机器，按播放键，一首一首按着顺序听完，再取出来，换下一张。</p>
-                <p>所以在这里，没有必听歌单，没有火热排名。只有屏幕上随机晃动的专辑封面，和你亲手选出的、在这一刻你最想听的那张专辑。</p>
-                  <p className="note-footer">换一种听歌方式，听这一刻我最想听的歌。</p>
+                <p>在武汉的时候，我有一台破旧的松下 CD 机，一叠 CD。里头有林生祥、有 Chinese Football、有 Blur。全部放在桌上的架子里，没有收藏、没有评论、没有播放量，也没有排名。</p>
+                <p>我有点怀念从架子上抽出 CD 塞进机器，按播放键，按顺序听完一整张，再取出来，换下一张。</p>
+                <p>所以在这里，只有屏幕上晃动的专辑封面，和你亲手选的、在这一刻你最想听的那张专辑。</p>
+                  <p className="note-footer">另一种听歌的入口 by ZQ Yang</p>
                 </div>
                 <button className="close-note-btn" onClick={() => setIsNoteOpen(false)}>关闭</button>
               </div>
