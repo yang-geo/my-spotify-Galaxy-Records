@@ -34,8 +34,9 @@ function App() {
   const BACKEND_URL = 'https://galaxy-backend-i0q1.onrender.com';
 
   const [isAdmin, setIsAdmin] = useState(false);
-  const libraryClickRef = useRef(0);
-  const clickTimerRef = useRef(null);
+
+  const libraryClickRef = useRef(0); // 必须有这一行
+  const clickTimerRef = useRef(null); // 必须有这一行
   // === 初始化 ===
   // useEffect(() => {
   //   fetchAllAlbums();
@@ -286,8 +287,20 @@ function App() {
                 </div>
             )}
           </div>
-
-          <Sidebar isAdmin={isAdmin} isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(false)} albums={allAlbums} onDelete={confirmDeleteAlbum} onSearch={handleSearch} onSelect={(album) => { setSelectedAlbum(album); setIsSidebarOpen(false); onHeaderClick={handleSidebarTitleClick};}} onOpenNote={handleOpenNote} />
+          <Sidebar 
+              isAdmin={isAdmin} 
+              isOpen={isSidebarOpen} 
+              toggleSidebar={() => setIsSidebarOpen(false)} 
+              albums={allAlbums} 
+              onDelete={confirmDeleteAlbum} 
+              onSearch={handleSearch} 
+              onSelect={(album) => { 
+                setSelectedAlbum(album); 
+                setIsSidebarOpen(false); 
+              }} 
+              onHeaderClick={handleSidebarTitleClick} // ✅ 正确：它是 Sidebar 的一个独立属性
+              onOpenNote={handleOpenNote} 
+            />
 
           <div className="album-container">
             {displayedAlbums.map((album) => (
