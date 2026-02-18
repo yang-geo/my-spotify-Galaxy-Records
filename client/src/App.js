@@ -20,14 +20,14 @@ function App() {
   const [isNoteOpen, setIsNoteOpen] = useState(false);
 
   // === 洗牌与显示控制 ===
-  const [isAutoShuffle, setIsAutoShuffle] = useState(false);
+  const [isAutoShuffle, setIsAutoShuffle] = useState(true);
   const [shuffleInterval, setShuffleInterval] = useState(10);
   
   // 新增：isLocked 状态，默认为 false
   const [isLocked, setIsLocked] = useState(false); 
   
   // 修改：displayLimit 初始值可以是数字，也可以是字符串 'ALL'
-  const [displayLimit, setDisplayLimit] = useState(10); 
+  const [displayLimit, setDisplayLimit] = useState('ALL'); 
   
   const [showShuffleSettings, setShowShuffleSettings] = useState(false);
   const shuffleTimerRef = useRef(null);
@@ -137,20 +137,20 @@ function App() {
 
   // === 搜索逻辑 ===
   const handleSearch = (query) => {
-    const lowerQ = query.toLowerCase();
-    if (!query) {
-      performSmartShuffle(); 
-      return;
-    }
-    const filtered = allAlbums.filter(a => 
-      a.name.toLowerCase().includes(lowerQ) || 
-      a.artist.toLowerCase().includes(lowerQ)
-    );
-    const positionedFiltered = filtered.map(album => ({
-       ...album,
-       ...getRandomCoords()
-    }));
-    setDisplayedAlbums(positionedFiltered);
+    // const lowerQ = query.toLowerCase();
+    // if (!query) {
+    //   performSmartShuffle(); 
+    //   return;
+    // }
+    // const filtered = allAlbums.filter(a => 
+    //   a.name.toLowerCase().includes(lowerQ) || 
+    //   a.artist.toLowerCase().includes(lowerQ)
+    // );
+    // const positionedFiltered = filtered.map(album => ({
+    //    ...album,
+    //    ...getRandomCoords()
+    // }));
+    // setDisplayedAlbums(positionedFiltered);
   };
 
   // === 删除逻辑 ===
@@ -287,7 +287,7 @@ function App() {
                 </div>
             )}
           </div>
-          <Sidebar 
+          {/* <Sidebar 
               isAdmin={isAdmin} 
               isOpen={isSidebarOpen} 
               toggleSidebar={() => setIsSidebarOpen(false)} 
@@ -300,6 +300,16 @@ function App() {
               }} 
               onHeaderClick={handleSidebarTitleClick} // ✅ 正确：它是 Sidebar 的一个独立属性
               onOpenNote={handleOpenNote} 
+            /> */}
+            <Sidebar 
+              isAdmin={isAdmin} 
+              isOpen={isSidebarOpen} 
+              toggleSidebar={() => setIsSidebarOpen(false)} 
+              albums={allAlbums} // 传入全量数据
+              onDelete={confirmDeleteAlbum} 
+              onSelect={(album) => { setSelectedAlbum(album); setIsSidebarOpen(false); }} 
+              onHeaderClick={handleSidebarTitleClick}
+              onOpenNote={() => { setIsSidebarOpen(false); setIsNoteOpen(true); }} 
             />
 
           <div className="album-container">
