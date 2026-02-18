@@ -471,3 +471,20 @@ html, body, #root, .App {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px); /* 从下方缩小浮现 */
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.floating-album {
+  /* 确保这个动画只在“第一次挂载”时执行 */
+  animation: slideIn 0.5s ease-out forwards;
+  transition: top 1s ease-in-out, left 1s ease-in-out; /* 位置移动保持 1s 平滑 */
+}
