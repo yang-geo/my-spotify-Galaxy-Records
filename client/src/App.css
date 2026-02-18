@@ -453,3 +453,21 @@ html, body, #root, .App {
     to { transform: translateY(0); }
   }
 }
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.spinning-record {
+  font-size: 50px;
+  animation: spin 2s linear infinite; /* 让它转起来 */
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
