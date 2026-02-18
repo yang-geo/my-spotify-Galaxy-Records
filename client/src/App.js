@@ -43,7 +43,7 @@ function App() {
       try {
         setLoading(true);
         // 注意：这里要把 localhost 换成你 Render 的后端地址
-        const response = await fetch('https://galaxy-backend-i0q1.onrender.com');
+        const response = await fetch('https://galaxy-backend-i0q1.onrender.com/api/albums');
         const data = await response.json();
         setAllAlbums(data);
         updateDisplayedSubset(data, displayLimit);
@@ -426,8 +426,9 @@ function App() {
             <div className="note-overlay" onClick={() => setIsNoteOpen(false)}>
               <div className="note-content" onClick={(e) => e.stopPropagation()}>
                 <div className="note-inner">
-                  <p>在武汉的时候，我有一台老旧的松下 CD 机...</p>
-                  {/* ... 其他文字 ... */}
+               <p>在武汉的时候，我有一台老旧的松下 CD 机，一叠 CD。里头有林生祥、有 Chinese Football、有 Blur。全部放在桌上的架子里，没有红心、没有评论、没有播放量，也没有排名。</p>
+               <p>我有点怀念从架子上抽出 CD 塞进机器，按播放键，一首一首按着顺序听完，再取出来，换下一张。</p>
+               <p>所以在这里，没有必听歌单，没有火热排名。只有屏幕上随机晃动的专辑封面，和你亲手选出的、在这一刻你最想听的那张专辑。</p>
                   <p className="note-footer">换一种听歌方式，听这一刻我最想听的歌。</p>
                 </div>
                 <button className="close-note-btn" onClick={() => setIsNoteOpen(false)}>关闭</button>
