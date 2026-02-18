@@ -1,0 +1,455 @@
+/* client/src/App.css */
+
+/* =========================================
+   1. Global Reset & Basic Setup
+   ========================================= */
+html, body, #root, .App {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling globally */
+  position: fixed; /* Prevent rubber-banding on iOS */
+  background-color: #050505; 
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.App {
+  position: relative;
+}
+
+/* =========================================
+   2. Main Album Container & Floating Albums
+   ========================================= */
+.album-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Single Album Card */
+.floating-album {
+  position: absolute;
+  width: 160px;
+  pointer-events: auto;
+  text-decoration: none;
+  color: white;
+  
+  /* Breathe animation (always on) */
+  animation: breathe 6s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -1s);
+  
+  /* DEFAULT: No transition for instant jumps (Unlocked mode) */
+  transition: none; 
+  
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* LOCKED MODE: Enable smooth transition for position changes */
+.floating-album.animate {
+  transition: top 1.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              left 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.floating-album img {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover Effects (Desktop) */
+.floating-album:hover {
+  transform: scale(1.15) translateY(-10px) !important;
+  z-index: 1000;
+}
+
+.floating-album:hover img {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+  filter: brightness(1.1);
+}
+
+/* Album Info Text */
+.album-info {
+  position: absolute;
+  bottom: 0; left: 0; width: 100%;
+  padding: 20px 10px 10px 10px;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(10px);
+  background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0));
+  border-radius: 0 0 8px 8px;
+  transition: all 0.3s ease;
+}
+
+.floating-album:hover .album-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.album-info p {
+  margin: 0;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+  font-size: 14px;
+}
+
+.album-info span {
+  display: block;
+  font-size: 12px;
+  color: #b3b3b3;
+  margin-top: 4px;
+}
+
+@keyframes breathe {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+/* =========================================
+   3. UI Controls (Buttons & Bars)
+   ========================================= */
+
+/* Top Right Control Container Wrapper */
+.shuffle-controls-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Standard Button Style (Desktop) */
+.shuffle-btn, .menu-btn {
+  position: relative;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shuffle-btn:hover, .menu-btn:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.5);
+}
+
+/* Active State for Toggle Buttons */
+.shuffle-btn.active {
+  background: rgba(29, 185, 84, 0.15); /* Spotify Green tint */
+  border-color: #1DB954;
+  color: #1DB954;
+}
+
+/* Pulse Animation for Auto Shuffle */
+.active-pulse {
+  background: rgba(29, 185, 84, 0.15) !important;
+  color: #1DB954 !important;
+  border-color: #1DB954 !important;
+  box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(29, 185, 84, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0); }
+}
+
+/* Text inside buttons */
+.btn-text {
+  margin-left: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.btn-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Menu Button Position */
+.menu-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+/* Bottom Bar */
+.bottom-bar {
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.add-album-btn {
+  pointer-events: auto;
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+
+.add-album-btn:hover {
+  transform: scale(1.05);
+}
+
+.add-album-btn .btn-icon {
+  border: 2px solid black;
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  margin-right: 10px;
+  display: flex; justify-content: center; align-items: center;
+}
+
+/* Settings Dropdown Panel */
+.shuffle-settings-panel {
+  margin-top: 10px;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid #333;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  text-align: right;
+  animation: fadeIn 0.2s ease;
+}
+
+.shuffle-settings-panel p {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.interval-options {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.interval-btn {
+  background: transparent;
+  border: 1px solid #444;
+  color: #888;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.interval-btn:hover { border-color: #fff; color: #fff; }
+.interval-btn.selected { background: #fff; color: #000; border-color: #fff; font-weight: bold; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   4. Note & Sidebar Footer
+   ========================================= */
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #222;
+  text-align: center;
+}
+
+.personal-note-trigger {
+  font-size: 11px;
+  color: #444;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: color 0.3s;
+}
+.personal-note-trigger:hover { color: #888; }
+
+.note-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 6000;
+  backdrop-filter: blur(20px);
+}
+
+.note-content {
+  max-width: 460px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  color: #d1d1d1;
+  line-height: 2.2;
+  font-size: 16px;
+  text-align: left;
+}
+
+.note-footer {
+  margin-top: 40px;
+  color: #1db954;
+  font-style: italic;
+  font-size: 15px;
+}
+
+.close-note-btn {
+  background: none;
+  border: 1px solid #333;
+  color: #666;
+  padding: 6px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.close-note-btn:hover { color: #fff; border-color: #fff; }
+
+/* =========================================
+   📱 5. MOBILE RESPONSIVE ADAPTATION (< 768px)
+   ========================================= */
+@media (max-width: 768px) {
+  
+  /* A. Button Compact Mode (Square Icons) */
+  .btn-text {
+    display: none; /* Hide text on mobile */
+  }
+  
+  .shuffle-btn, .menu-btn {
+    padding: 0;        /* Reset padding */
+    width: 40px;       /* Fixed square size */
+    height: 40px;
+    border-radius: 12px;
+  }
+  
+  .btn-icon {
+    margin: 0 !important;
+    font-size: 18px;   /* Larger icon */
+  }
+
+  .add-album-btn .btn-icon {
+    margin-right: 0; /* Center icon in circle button */
+  }
+  
+  .add-album-btn {
+    width: 50px; height: 50px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  /* B. Position Adjustments */
+  .shuffle-container {
+    top: 15px; right: 15px;
+  }
+  
+  .menu-btn {
+    top: 15px; left: 15px;
+  }
+  
+  .bottom-bar {
+    bottom: 40px; /* Space for Home Indicator */
+  }
+  
+  .shuffle-settings-panel {
+    width: 220px; /* Prevent overflow */
+  }
+
+  /* C. Album Card Adjustments */
+  .floating-album {
+    width: 110px;
+  }
+  
+  /* Always show info text (with gradient bg) */
+  .album-info {
+    opacity: 1;
+    transform: translateY(0);
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
+    padding-bottom: 5px;
+  }
+  .album-info p { font-size: 12px; }
+  .album-info span { font-size: 10px; color: #ccc; }
+
+  /* D. Sidebar Full Screen */
+  .sidebar {
+    width: 100%;
+    max-width: 100%;
+    z-index: 3000;
+  }
+
+  /* E. Bottom Drawer Modals (Slide Up) */
+  .detail-modal-content,
+  .modal-content,
+  .note-content,
+  .dialog-content {
+    position: absolute;
+    bottom: 0 !important;
+    left: 0 !important;
+    top: auto !important;
+    transform: none !important;
+    
+    width: 100% !important;
+    max-width: 100% !important;
+    
+    border-radius: 24px 24px 0 0;
+    padding: 30px 25px 60px 25px; /* Extra bottom padding */
+    
+    max-height: 85vh;
+    overflow-y: auto;
+    
+    background: #181818;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    
+    animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* Align overlays to bottom */
+  .modal-overlay, .note-overlay, .dialog-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  /* Detail Image */
+  .detail-cover {
+    width: 140px; height: 140px;
+    margin: 0 auto 20px auto;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+}

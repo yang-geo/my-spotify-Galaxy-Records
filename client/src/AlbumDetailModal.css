@@ -1,0 +1,198 @@
+.detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 4000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.detail-content {
+  width: 800px;
+  height: 500px;
+  background: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border: 1px solid #333;
+}
+
+.close-detail-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* === 左侧区域调整 === */
+.detail-left {
+  width: 40%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: radial-gradient(circle at top left, rgba(255,255,0,0.1), transparent 70%);
+}
+
+/* 新增：图片容器，用来限制图片大小 */
+.cover-wrapper {
+  width: 100%;
+  /* 限制最大宽度为 200px，这样图片就不会太大了 */
+  max-width: 200px; 
+  margin-bottom: 25px; /* 图片和下面文字的间距 */
+}
+
+.detail-cover {
+  width: 100%;
+  border-radius: 8px; /* 圆角稍微改小一点，更精致 */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  display: block;
+}
+
+.detail-left h1 {
+  font-size: 28px; /* 字体稍微加大 */
+  margin: 0 0 5px 0;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.detail-left h3 {
+  font-size: 16px;
+  color: #bbb;
+  margin: 0 0 30px 0; /* 增加底部间距，因为没有标签了 */
+  font-weight: normal;
+}
+
+/* === 按钮样式完全重写 (复刻图2) === */
+.play-now-btn {
+  background-color: #1DB954; /* 官方 Spotify 绿 */
+  color: black; /* 黑色文字 */
+  text-decoration: none;
+  padding: 14px 32px; /* 更大的胶囊形状 */
+  border-radius: 50px; /* 完全圆角 */
+  font-weight: 700; /* 粗体 */
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  
+  /* 布局：让图标和文字居中对齐 */
+  display: inline-flex;
+  align-items: center;
+  width: fit-content; /* 宽度随内容自适应 */
+  
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.play-now-btn:hover {
+  transform: scale(1.05); /* 悬浮放大 */
+  background-color: #1ed760; /* 悬浮变亮一点点 */
+}
+
+/* 图标样式 */
+.spotify-icon-svg {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px; /* 图标和文字的距离 */
+  color: black; /* 确保图标是黑色的 */
+}
+
+/* === 右侧区域 (保持不变) === */
+.detail-right {
+  width: 60%;
+  background: rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #333;
+}
+
+.comments-header {
+  padding: 20px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #888;
+  border-bottom: 1px solid #333;
+}
+
+.comments-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.no-signal {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #444;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.comment-item {
+  margin-bottom: 15px;
+  background: rgba(255,255,255,0.05);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.comment-text {
+  font-size: 14px;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.comment-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #666;
+}
+
+.comment-meta button {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  cursor: pointer;
+  padding: 0;
+}
+
+.comment-form {
+  padding: 20px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #333;
+}
+
+.comment-form input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 8px;
+  color: white;
+  outline: none;
+}
+
+.comment-form button {
+  background: #4338ca;
+  border: none;
+  width: 40px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}

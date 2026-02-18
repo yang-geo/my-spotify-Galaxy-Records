@@ -1,0 +1,96 @@
+/* 遮罩层：保持深色磨砂感 */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 5000;
+  backdrop-filter: blur(8px);
+}
+
+/* 弹窗主体：极简黑色卡片 */
+.modal-content {
+  background: #181818; /* Spotify 深灰色背景 */
+  padding: 40px;
+  border-radius: 12px; /* 圆角稍微小一点，更干练 */
+  width: 450px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border: 1px solid #282828; /* 微妙的边框 */
+}
+
+/* 标题 */
+.modal-content h2 {
+  margin: 0 0 15px 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+/* 提示文字：简洁的灰色 */
+.modal-content p {
+  margin: 0 0 30px 0;
+  color: #b3b3b3;
+  font-size: 16px;
+}
+
+/* 输入框：极简风格 */
+.modal-input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 30px;
+  background: #282828; /* 比背景稍亮 */
+  border: 1px solid transparent; /* 默认无边框 */
+  border-radius: 4px; /* 微圆角 */
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box; /* 确保 padding 不会撑破宽度 */
+  transition: all 0.2s;
+}
+
+/* 输入框聚焦时：显示 Spotify 绿边框 */
+.modal-input:focus {
+  border-color: #1DB954;
+  background: #333;
+}
+
+/* 底部按钮区域 */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* 通用按钮样式 */
+.modal-actions button {
+  padding: 14px 32px;
+  border-radius: 50px; /* 胶囊形状 */
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+/* 取消按钮：透明背景，灰色文字 */
+.cancel-btn {
+  background: transparent;
+  color: #b3b3b3;
+}
+.cancel-btn:hover {
+  color: #fff;
+}
+
+/* 发射按钮：Spotify 绿底黑字 */
+.launch-btn {
+  background-color: #1DB954; /* 核心 Spotify 绿 */
+  color: #000; /* 黑色文字对比度最高 */
+}
+.launch-btn:hover {
+  background-color: #1ed760; /* 悬浮变亮 */
+  transform: scale(1.02); /* 轻微放大 */
+}
