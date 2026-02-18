@@ -327,7 +327,7 @@ function App() {
       ) : (
         /* 2. 真正的 UI 内容：当数据加载完成后显示 */
         <>
-          <h1>Galaxy Records</h1>
+          {/* <h1>Galaxy Records</h1> */}
           
           {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2500, background: 'rgba(0,0,0,0.3)' }} />}
 
