@@ -31,6 +31,7 @@ function App() {
   
   const [showShuffleSettings, setShowShuffleSettings] = useState(false);
   const shuffleTimerRef = useRef(null);
+  const BACKEND_URL = 'https://galaxy-backend-i0q1.onrender.com';
 
   // === 初始化 ===
   // useEffect(() => {
@@ -44,7 +45,8 @@ function App() {
         // 注意：这里要把 localhost 换成你 Render 的后端地址
         const response = await fetch('https://galaxy-backend-i0q1.onrender.com');
         const data = await response.json();
-        setAlbums(data);
+        setAllAlbums(data);
+        updateDisplayedSubset(data, displayLimit);
       } catch (error) {
         console.error("Error fetching albums:", error);
       } finally {
@@ -54,7 +56,7 @@ function App() {
 
     fetchAlbums();
   }, []);
-
+ 
   // === 自动洗牌定时器 ===
   useEffect(() => {
     if (shuffleTimerRef.current) clearInterval(shuffleTimerRef.current);
@@ -69,7 +71,8 @@ function App() {
   // === 获取所有数据 ===
   const fetchAllAlbums = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/albums');
+      const res = await axios.get(`${BACKEND_URL}/api/albums`);
+      // const res = await axios.get('http://localhost:5000/api/albums');
       setAllAlbums(res.data);
       // 首次加载
       updateDisplayedSubset(res.data, displayLimit);
@@ -152,14 +155,15 @@ function App() {
   };
   const handleDeleteAlbum = async (id) => {
     try { 
-      await axios.delete(`http://localhost:5000/api/albums/${id}`); 
+      // await axios.delete(`http://localhost:5000/api/albums/${id}`); 
+      await axios.delete(`${BACKEND_URL}/api/albums/${id}`);
       fetchAllAlbums(); 
     } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Delete failed', action: null }); }
   };
 
-  const handleAddComment = async (albumId, text) => { try { const res = await axios.post(`http://localhost:5000/api/albums/${albumId}/comments`, { text }); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
-  const handleDeleteComment = async (albumId, commentId) => { try { const res = await axios.delete(`http://localhost:5000/api/albums/${albumId}/comments/${commentId}`); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
-  const handleLaunch = async (linkString) => { setIsAddModalOpen(false); if (!linkString) return; try { const response = await axios.post('http://localhost:5000/api/album-info', { link: linkString }); const newAll = [...allAlbums, response.data]; setAllAlbums(newAll); updateDisplayedSubset(newAll, displayLimit); } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Failed to add album', action: null }); } };
+  const handleAddComment = async (albumId, text) => { try { const res = await axios.post(`https://galaxy-backend-i0q1.onrender.com/api/albums/${albumId}/comments`, { text }); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
+  const handleDeleteComment = async (albumId, commentId) => { try { const res = await axios.delete(`https://galaxy-backend-i0q1.onrender.com/api/albums/${albumId}/comments/${commentId}`); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
+  const handleLaunch = async (linkString) => { setIsAddModalOpen(false); if (!linkString) return; try { const response = await axios.post('https://galaxy-backend-i0q1.onrender.com/api/album-info', { link: linkString }); const newAll = [...allAlbums, response.data]; setAllAlbums(newAll); updateDisplayedSubset(newAll, displayLimit); } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Failed to add album', action: null }); } };
   const handleOpenNote = () => { setIsSidebarOpen(false); setIsNoteOpen(true); };
 
 //   return (
