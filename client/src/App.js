@@ -33,6 +33,9 @@ function App() {
   const shuffleTimerRef = useRef(null);
   const BACKEND_URL = 'https://galaxy-backend-i0q1.onrender.com';
 
+  const [isAdmin, setIsAdmin] = useState(false);
+  const libraryClickRef = useRef(0);
+  const clickTimerRef = useRef(null);
   // === 初始化 ===
   // useEffect(() => {
   //   fetchAllAlbums();
@@ -160,6 +163,36 @@ function App() {
       fetchAllAlbums(); 
     } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Delete failed', action: null }); }
   };
+  // 2. 隐蔽入口逻辑：点击 Library 按钮 3 次
+  const handleLibraryClick = () => {
+      // 开启侧边栏（原有功能）
+      setIsSidebarOpen(true);
+
+      // 记录点击次数
+      libraryClickRef.current += 1;
+
+      // 清除之前的定时器，如果在 2 秒内没点够 3 次，次数清零
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+      clickTimerRef.current = setTimeout(() => {
+          libraryClickRef.current = 0;
+      }, 2000);
+
+      // 触发密码框
+      if (libraryClickRef.current === 3) {
+          const password = window.prompt("Enter Admin Password:"); // 英文提示
+          
+          // 使用 Vercel 环境变量进行验证
+          if (password === process.env.REACT_APP_ADMIN_PWD) {
+              setIsAdmin(true);
+              alert("Admin mode activated.");
+          } else {
+              alert("Access denied. Staying in Guest mode.");
+          }
+          libraryClickRef.current = 0;
+      }
+  };
+
+  
 
   const handleAddComment = async (albumId, text) => { try { const res = await axios.post(`https://galaxy-backend-i0q1.onrender.com/api/albums/${albumId}/comments`, { text }); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
   const handleDeleteComment = async (albumId, commentId) => { try { const res = await axios.delete(`https://galaxy-backend-i0q1.onrender.com/api/albums/${albumId}/comments/${commentId}`); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
@@ -398,7 +431,7 @@ function App() {
             )}
           </div>
 
-          <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(false)} albums={allAlbums} onDelete={confirmDeleteAlbum} onSearch={handleSearch} onSelect={(album) => { setSelectedAlbum(album); setIsSidebarOpen(false); }} onOpenNote={handleOpenNote} />
+          <Sidebar isAdmin={isAdmin} isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(false)} albums={allAlbums} onDelete={confirmDeleteAlbum} onSearch={handleSearch} onSelect={(album) => { setSelectedAlbum(album); setIsSidebarOpen(false); }} onOpenNote={handleOpenNote} />
 
           <div className="album-container">
             {displayedAlbums.map((album) => (
@@ -418,8 +451,18 @@ function App() {
             <button className="add-album-btn" onClick={() => setIsAddModalOpen(true)}><span className="btn-icon">+</span><span className="btn-text">Add Album</span></button>
           </div>
 
+          {/* 只有管理员能看到添加按钮 */}
+          {isAdmin && (
+            <div className="bottom-bar">
+              <button className="add-album-btn" onClick={() => setIsAddModalOpen(true)}>
+                <span className="btn-icon">+</span>
+                <span className="btn-text">Add Album</span>
+              </button>
+            </div>
+          )}
+
           <AddAlbumModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onLaunch={handleLaunch} />
-          <AlbumDetailModal album={selectedAlbum} onClose={() => setSelectedAlbum(null)} onAddComment={handleAddComment} onDeleteComment={handleDeleteComment} />
+          <AlbumDetailModal isAdmin={isAdmin} album={selectedAlbum} onClose={() => setSelectedAlbum(null)} onAddComment={handleAddComment} onDeleteComment={handleDeleteComment} />
           <DialogModal isOpen={dialog.isOpen} type={dialog.type} message={dialog.message} onConfirm={dialog.action} onClose={() => setDialog({ ...dialog, isOpen: false })} />
           
           {isNoteOpen && (
