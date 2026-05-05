@@ -212,8 +212,8 @@ function App() {
         }}>
           <div className="spinning-record" style={{ fontSize: '60px', marginBottom: '20px' }}>💿</div>
           <h2 style={{ fontWeight: '300', letterSpacing: '2px' }}>GALAXY RECORDS</h2>
-          <p style={{ color: '#b3b3b3', marginTop: '10px' }}>唤醒云端服务器中...</p>
-          <p style={{ color: '#666', fontSize: '12px' }}>初次加载可能需要约 50 秒，请稍候</p>
+          <p style={{ color: '#b3b3b3', marginTop: '10px' }}>Waking up cloud server...</p>
+          <p style={{ color: '#666', fontSize: '12px' }}>Initial load may take up to 50s. Please wait, or sponsor me for a faster server.</p>
         </div>
       ) : (
         /* 2. 真正的 UI 内容 */
