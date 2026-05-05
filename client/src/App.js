@@ -359,7 +359,7 @@ function App() {
           <AddAlbumModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onLaunch={handleLaunch} />
           <AlbumDetailModal isAdmin={isAdmin} album={selectedAlbum} onClose={() => setSelectedAlbum(null)} onAddComment={handleAddComment} onDeleteComment={handleDeleteComment} />
           <DialogModal isOpen={dialog.isOpen} type={dialog.type} message={dialog.message} onConfirm={dialog.action} onClose={() => setDialog({ ...dialog, isOpen: false })} />
-          
+{/*           
           {isNoteOpen && (
             <div className="note-overlay" onClick={() => setIsNoteOpen(false)}>
               <div className="note-content" onClick={(e) => e.stopPropagation()}>
@@ -373,7 +373,50 @@ function App() {
                 <button className="close-note-btn" onClick={() => setIsNoteOpen(false)}>关闭</button>
               </div>
             </div>
-          )}
+          )} */}
+
+          {isNoteOpen && (
+          <div className="note-overlay" onClick={() => setIsNoteOpen(false)}>
+            <div className="note-content" onClick={(e) => e.stopPropagation()}>
+              <div className="note-inner">
+                
+                {/* === 中文部分 === */}
+                <div className="note-text-zh">
+                  <p>在武汉的时候，我有一台老旧的松下 CD 机，一叠 CD。里头有林生祥、有 Chinese Football、有 Blur。全部放在桌上的架子里，没有红心、没有评论、没有播放量，也没有排名。</p>
+                  <p>我有点怀念从架子上抽出 CD 塞进机器，按播放键，一首一首按着顺序听完，再取出来，换下一张。</p>
+                  <p>所以在这里，没有必听歌单，没有火热排名。只有屏幕上随机晃动的专辑封面，和你亲手选出的、在这一刻你最想听的那张专辑。</p>
+                </div>
+
+                {/* === 优雅的分割线 === */}
+                <hr style={{ border: 'none', borderTop: '1px dashed #333', margin: '25px 0' }} />
+
+                {/* === 英文部分 === */}
+                <div className="note-text-en" style={{ color: '#aaa', fontSize: '0.95em', lineHeight: '1.6' }}>
+                  <p>Back in Wuhan, I had an old Panasonic CD player and a stack of CDs—Lin Sheng Xiang, Chinese Football, Blur. They sat on a rack on my desk, with no 'likes', no comments, no play counts, and no rankings.</p>
+                  <p>I kind of miss the ritual of pulling a CD from the rack, putting it into the player, pressing play, and listening to it track by track before swapping it for the next one.</p>
+                  <p>So here, there are no "must-listen" playlists or trending charts. There are only album covers drifting randomly across the screen, waiting for you to pick the exact one you want to hear at this very moment.</p>
+                </div>
+
+                {/* === 双语落款 === */}
+                <p className="note-footer" style={{ 
+                  marginTop: '30px', 
+                  borderTop: '1px solid #333', 
+                  paddingTop: '15px',
+                  color: '#888',
+                  fontSize: '12px',
+                  textAlign: 'center' 
+                }}>
+                  另一种听歌的入口 / Another portal to music <br/>
+                  by ZQ Yang
+                </p>
+              </div>
+              
+              <button className="close-note-btn" onClick={() => setIsNoteOpen(false)}>
+                Close / 关闭
+              </button>
+            </div>
+          </div>
+        )}
         </>
       )}
     </div>
