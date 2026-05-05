@@ -222,7 +222,27 @@ function App() {
 
           {/* 修正：这里改为 handleLibraryClick */}
 
-          <button className="menu-btn" onClick={() => setIsSidebarOpen(true)}>☰ Library</button>
+          {/* <button className="menu-btn" onClick={() => setIsSidebarOpen(true)}>☰ Library</button> */}
+          {/* === 左上角控制区 === */}
+          <div className="top-left-controls" style={{ position: 'absolute', top: '20px', left: '20px', display: 'flex', gap: '12px', zIndex: 2000 }}>
+            
+            <button 
+              className="menu-btn" 
+              style={{ position: 'static', margin: 0 }} 
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              ☰ Library
+            </button>
+
+            <button 
+              className="menu-btn" 
+              style={{ position: 'static', margin: 0 }} 
+              onClick={() => setIsNoteOpen(true)}
+            >
+              ℹ About
+            </button>
+
+          </div>
           {/* === 右上角控制区 === */}
           <div className="shuffle-container" style={{ position: 'absolute', top: 20, right: 20, zIndex: 2000, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
             <div className="shuffle-controls-row">
