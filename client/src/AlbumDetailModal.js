@@ -108,7 +108,8 @@ function AlbumDetailModal({ album, onClose, onAddComment, onDeleteComment, isAdm
           <div className="cover-wrapper">
              <img src={album.coverImage} alt={album.name} className="detail-cover" />
           </div>
-          
+
+          <div className="detail-left-text">
           <h1>{album.name}</h1>
           <h3>{album.artist}</h3>
 
@@ -118,6 +119,7 @@ function AlbumDetailModal({ album, onClose, onAddComment, onDeleteComment, isAdm
             </svg>
             Play Now
           </a>
+          </div>
         </div>
 
         {/* 右侧：评论区 */}

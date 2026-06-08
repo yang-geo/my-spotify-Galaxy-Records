@@ -196,3 +196,90 @@
   color: white;
   cursor: pointer;
 }
+
+/* =========================================
+   Mobile Responsive (< 768px)
+   ========================================= */
+@media (max-width: 768px) {
+  .detail-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .detail-content {
+    width: 85%;
+    max-width: 85%;
+    height: auto;
+    max-height: 80vh;
+    flex-direction: column;
+    overflow-y: auto;
+    border-radius: 16px;
+  }
+
+  /* Move close button to top-right so it doesn't clash with left-side layout */
+  .close-detail-btn {
+    top: 12px;
+    left: auto;
+    right: 12px;
+  }
+
+  .detail-left {
+    width: 100%;
+    padding: 16px 16px 14px 14px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    background: none;
+    box-sizing: border-box;
+  }
+
+  .cover-wrapper {
+    width: 76px !important;
+    height: 76px !important;
+    max-width: 76px !important;
+    min-width: 76px !important;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+  }
+
+  .cover-wrapper .detail-cover {
+    width: 76px !important;
+    height: 76px !important;
+    object-fit: cover;
+  }
+
+  .detail-left-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .detail-left h1 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .detail-left h3 {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .play-now-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .spotify-icon-svg {
+    width: 18px;
+    height: 18px;
+    margin-right: 7px;
+  }
+
+  .detail-right {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #333;
+    max-height: 35vh;
+  }
+}
