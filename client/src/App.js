@@ -34,6 +34,8 @@ function App() {
   const BACKEND_URL = 'https://galaxy-backend-i0q1.onrender.com';
 
   const [isAdmin, setIsAdmin] = useState(false);
+  const adminPwdRef = useRef('');
+  const adminHeaders = () => ({ headers: { 'x-admin-password': adminPwdRef.current } });
 
   const libraryClickRef = useRef(0); // 必须有这一行
   const clickTimerRef = useRef(null); // 必须有这一行
@@ -160,11 +162,11 @@ function App() {
   const handleDeleteAlbum = async (id) => {
     try { 
       // await axios.delete(`http://localhost:5000/api/albums/${id}`); 
-      await axios.delete(`${BACKEND_URL}/api/albums/${id}`);
+      await axios.delete(`${BACKEND_URL}/api/albums/${id}`, adminHeaders());
       fetchAllAlbums(); 
     } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Delete failed', action: null }); }
   };
-  const handleSidebarTitleClick = () => {
+  const handleSidebarTitleClick = async () => {
       // 记录点击次数
       libraryClickRef.current += 1;
 
@@ -178,23 +180,25 @@ function App() {
 
       // 触发密码框
       if (libraryClickRef.current === 3) {
-          const password = window.prompt("Enter Admin Password:"); 
-          
-          if (password === process.env.REACT_APP_ADMIN_PWD) {
+          libraryClickRef.current = 0;
+          const password = window.prompt("Enter Admin Password:");
+          if (!password) return;
+          try {
+              await axios.post(`${BACKEND_URL}/api/admin/verify`, { password });
+              adminPwdRef.current = password;
               setIsAdmin(true);
               alert("Admin mode activated.");
-          } else {
+          } catch {
               alert("Access denied.");
           }
-          libraryClickRef.current = 0;
       }
   };
 
   
 
-  const handleAddComment = async (albumId, text) => { try { const res = await axios.post(`https://galaxy-backend-i0q1.onrender.com/api/albums/${albumId}/comments`, { text }); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
-  const handleDeleteComment = async (albumId, commentId) => { try { const res = await axios.delete(`https://galaxy-backend-i0q1.onrender.com/api/albums/${albumId}/comments/${commentId}`); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
-  const handleLaunch = async (linkString) => { setIsAddModalOpen(false); if (!linkString) return; try { const response = await axios.post('https://galaxy-backend-i0q1.onrender.com/api/album-info', { link: linkString }); const newAll = [...allAlbums, response.data]; setAllAlbums(newAll); updateDisplayedSubset(newAll, displayLimit); } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Failed to add album', action: null }); } };
+  const handleAddComment = async (albumId, text) => { try { const res = await axios.post(`${BACKEND_URL}/api/albums/${albumId}/comments`, { text }, adminHeaders()); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
+  const handleDeleteComment = async (albumId, commentId) => { try { const res = await axios.delete(`${BACKEND_URL}/api/albums/${albumId}/comments/${commentId}`, adminHeaders()); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
+  const handleLaunch = async (linkString) => { setIsAddModalOpen(false); if (!linkString) return; try { const response = await axios.post(`${BACKEND_URL}/api/album-info`, { link: linkString }, adminHeaders()); const newAll = [...allAlbums, response.data]; setAllAlbums(newAll); updateDisplayedSubset(newAll, displayLimit); } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Failed to add album', action: null }); } };
   const handleOpenNote = () => { setIsSidebarOpen(false); setIsNoteOpen(true); };
 
   return (

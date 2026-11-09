@@ -171,10 +171,29 @@ const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node');
 const cors = require('cors');
 const mongoose = require('mongoose'); // 引入 mongoose
+const crypto = require('crypto');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// === Admin 鉴权：密码只存在于服务端环境变量 ===
+const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest();
+const isValidPassword = (pwd) => {
+  if (!process.env.ADMIN_PASSWORD || !pwd) return false;
+  return crypto.timingSafeEqual(sha256(pwd), sha256(process.env.ADMIN_PASSWORD));
+};
+const requireAdmin = (req, res, next) => {
+  if (!isValidPassword(req.get('x-admin-password'))) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+};
+
+app.post('/api/admin/verify', (req, res) => {
+  if (!isValidPassword(req.body.password)) return res.status(401).json({ ok: false });
+  res.json({ ok: true });
+});
 
 // === 1. 连接 MongoDB 云端数据库 ===
 mongoose.connect(process.env.MONGO_URI)
@@ -238,7 +257,7 @@ app.get('/api/albums', async (req, res) => {
 });
 
 // 2. 添加专辑
-app.post('/api/album-info', async (req, res) => {
+app.post('/api/album-info', requireAdmin, async (req, res) => {
   const { link } = req.body;
   if (!link) return res.status(400).json({ error: 'No link provided' });
 
@@ -269,7 +288,7 @@ app.post('/api/album-info', async (req, res) => {
 });
 
 // 3. 删除专辑
-app.delete('/api/albums/:id', async (req, res) => {
+app.delete('/api/albums/:id', requireAdmin, async (req, res) => {
   try {
     await Album.deleteOne({ id: req.params.id }); // 从云端删
     res.json({ success: true });
@@ -279,7 +298,7 @@ app.delete('/api/albums/:id', async (req, res) => {
 });
 
 // 4. 全局洗牌 (更新所有坐标)
-app.post('/api/albums/shuffle', async (req, res) => {
+app.post('/api/albums/shuffle', requireAdmin, async (req, res) => {
   try {
     const albums = await Album.find();
     
@@ -299,7 +318,7 @@ app.post('/api/albums/shuffle', async (req, res) => {
 });
 
 // 5. 添加评论
-app.post('/api/albums/:id/comments', async (req, res) => {
+app.post('/api/albums/:id/comments', requireAdmin, async (req, res) => {
   try {
     const album = await Album.findOne({ id: req.params.id });
     if (!album) return res.status(404).json({ error: 'Not found' });
@@ -318,7 +337,7 @@ app.post('/api/albums/:id/comments', async (req, res) => {
 });
 
 // 6. 删除评论
-app.delete('/api/albums/:albumId/comments/:commentId', async (req, res) => {
+app.delete('/api/albums/:albumId/comments/:commentId', requireAdmin, async (req, res) => {
   try {
     const album = await Album.findOne({ id: req.params.albumId });
     if (!album) return res.status(404).json({ error: 'Not found' });
