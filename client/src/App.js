@@ -85,7 +85,8 @@ function App() {
   // 扣除卡片自身尺寸和两侧留白，保证卡片完整落在屏幕内且左右对称
   const randomPos = () =>
     `calc(var(--gutter) + (100% - var(--card-w) - 2 * var(--gutter)) * ${Math.random().toFixed(3)})`;
-  const getRandomCoords = () => ({ top: randomPos(), left: randomPos() });
+  // z 也随机，否则渲染顺序固定，层叠关系永远不变
+  const getRandomCoords = () => ({ top: randomPos(), left: randomPos(), z: 10 + Math.floor(Math.random() * 900) });
 
   // === 核心功能：智能洗牌 (Smart Shuffle) ===
   const performSmartShuffle = () => {
@@ -294,7 +295,7 @@ function App() {
               <div 
                 key={album.id}
                 className={`floating-album ${isLocked ? 'animate' : ''}`}
-                style={{ top: album.top, left: album.left }} 
+                style={{ top: album.top, left: album.left, '--z': album.z }}
                 onClick={() => setSelectedAlbum(album)}
               >
                 <img src={album.coverImage} alt={album.name} />
