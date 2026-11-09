@@ -37,19 +37,15 @@ function App() {
   const adminPwdRef = useRef('');
   const adminHeaders = () => ({ headers: { 'x-admin-password': adminPwdRef.current } });
 
-  const libraryClickRef = useRef(0); // 必须有这一行
-  const clickTimerRef = useRef(null); // 必须有这一行
+  const libraryClickRef = useRef(0);
+  const clickTimerRef = useRef(null);
+
   // === 初始化 ===
-  // useEffect(() => {
-  //   fetchAllAlbums();
-  // }, []);
   useEffect(() => {
-    // 2. 修改：请求开始时确保 loading 为 true，结束后设为 false
     const fetchAlbums = async () => {
       try {
         setLoading(true);
-        // 注意：这里要把 localhost 换成你 Render 的后端地址
-        const response = await fetch('https://galaxy-backend-i0q1.onrender.com/api/albums');
+        const response = await fetch(`${BACKEND_URL}/api/albums`);
         const data = await response.json();
         setAllAlbums(data);
         updateDisplayedSubset(data, displayLimit);
@@ -72,15 +68,13 @@ function App() {
       }, shuffleInterval * 1000);
     }
     return () => clearInterval(shuffleTimerRef.current);
-  }, [isAutoShuffle, shuffleInterval, displayLimit, allAlbums, isLocked]); // 依赖项加入 isLocked
+  }, [isAutoShuffle, shuffleInterval, displayLimit, allAlbums, isLocked]);
 
   // === 获取所有数据 ===
   const fetchAllAlbums = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/albums`);
-      // const res = await axios.get('http://localhost:5000/api/albums');
       setAllAlbums(res.data);
-      // 首次加载
       updateDisplayedSubset(res.data, displayLimit);
     } catch (error) {
       console.error('Error fetching albums:', error);
@@ -96,14 +90,12 @@ function App() {
   // === 核心功能：智能洗牌 (Smart Shuffle) ===
   const performSmartShuffle = () => {
     if (isLocked) {
-      // 🔒 锁定模式：
-      // 不换专辑，只换位置！
-      // 因为 ID 不变，React 会复用 DOM，CSS transition 动画就会生效！
-      const movedAlbums = displayedAlbums.map(album => ({
+      // 🔒 锁定模式：不换专辑，只换位置（ID 不变，CSS transition 生效）
+      // 用函数式更新，避免定时器闭包拿到旧列表
+      setDisplayedAlbums(prev => prev.map(album => ({
         ...album,
-        ...getRandomCoords() // 只更新坐标
-      }));
-      setDisplayedAlbums(movedAlbums);
+        ...getRandomCoords()
+      })));
     } else {
       // 🔓 未锁定模式：
       // 从全集里重新抽取一批新的（像放回取样）
@@ -137,31 +129,12 @@ function App() {
     setDisplayedAlbums(positionedSubset);
   };
 
-  // === 搜索逻辑 ===
-  const handleSearch = (query) => {
-    // const lowerQ = query.toLowerCase();
-    // if (!query) {
-    //   performSmartShuffle(); 
-    //   return;
-    // }
-    // const filtered = allAlbums.filter(a => 
-    //   a.name.toLowerCase().includes(lowerQ) || 
-    //   a.artist.toLowerCase().includes(lowerQ)
-    // );
-    // const positionedFiltered = filtered.map(album => ({
-    //    ...album,
-    //    ...getRandomCoords()
-    // }));
-    // setDisplayedAlbums(positionedFiltered);
-  };
-
   // === 删除逻辑 ===
   const confirmDeleteAlbum = (id) => {
      setDialog({ isOpen: true, type: 'confirm', message: 'Delete this album?', action: () => { handleDeleteAlbum(id); setDialog({ ...dialog, isOpen: false }); } });
   };
   const handleDeleteAlbum = async (id) => {
-    try { 
-      // await axios.delete(`http://localhost:5000/api/albums/${id}`); 
+    try {
       await axios.delete(`${BACKEND_URL}/api/albums/${id}`, adminHeaders());
       fetchAllAlbums(); 
     } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Delete failed', action: null }); }
@@ -194,12 +167,9 @@ function App() {
       }
   };
 
-  
-
   const handleAddComment = async (albumId, text) => { try { const res = await axios.post(`${BACKEND_URL}/api/albums/${albumId}/comments`, { text }, adminHeaders()); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
   const handleDeleteComment = async (albumId, commentId) => { try { const res = await axios.delete(`${BACKEND_URL}/api/albums/${albumId}/comments/${commentId}`, adminHeaders()); const updatedList = allAlbums.map(a => a.id === albumId ? res.data : a); setAllAlbums(updatedList); setDisplayedAlbums(prev => prev.map(a => a.id === albumId ? res.data : a)); setSelectedAlbum(res.data); } catch (error) {} };
   const handleLaunch = async (linkString) => { setIsAddModalOpen(false); if (!linkString) return; try { const response = await axios.post(`${BACKEND_URL}/api/album-info`, { link: linkString }, adminHeaders()); const newAll = [...allAlbums, response.data]; setAllAlbums(newAll); updateDisplayedSubset(newAll, displayLimit); } catch (error) { setDialog({ isOpen: true, type: 'alert', message: 'Failed to add album', action: null }); } };
-  const handleOpenNote = () => { setIsSidebarOpen(false); setIsNoteOpen(true); };
 
   return (
     <div className="App">
@@ -224,9 +194,6 @@ function App() {
         <>
           {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2500, background: 'rgba(0,0,0,0.3)' }} />}
 
-          {/* 修正：这里改为 handleLibraryClick */}
-
-          {/* <button className="menu-btn" onClick={() => setIsSidebarOpen(true)}>☰ Library</button> */}
           {/* === 左上角控制区 === */}
           <div className="top-left-controls" style={{ position: 'absolute', top: '20px', left: '20px', display: 'flex', gap: '12px', zIndex: 2000 }}>
             
@@ -311,21 +278,7 @@ function App() {
                 </div>
             )}
           </div>
-          {/* <Sidebar 
-              isAdmin={isAdmin} 
-              isOpen={isSidebarOpen} 
-              toggleSidebar={() => setIsSidebarOpen(false)} 
-              albums={allAlbums} 
-              onDelete={confirmDeleteAlbum} 
-              onSearch={handleSearch} 
-              onSelect={(album) => { 
-                setSelectedAlbum(album); 
-                setIsSidebarOpen(false); 
-              }} 
-              onHeaderClick={handleSidebarTitleClick} // ✅ 正确：它是 Sidebar 的一个独立属性
-              onOpenNote={handleOpenNote} 
-            /> */}
-            <Sidebar 
+            <Sidebar
               isAdmin={isAdmin} 
               isOpen={isSidebarOpen} 
               toggleSidebar={() => setIsSidebarOpen(false)} 
@@ -363,21 +316,6 @@ function App() {
           <AddAlbumModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onLaunch={handleLaunch} />
           <AlbumDetailModal isAdmin={isAdmin} album={selectedAlbum} onClose={() => setSelectedAlbum(null)} onAddComment={handleAddComment} onDeleteComment={handleDeleteComment} />
           <DialogModal isOpen={dialog.isOpen} type={dialog.type} message={dialog.message} onConfirm={dialog.action} onClose={() => setDialog({ ...dialog, isOpen: false })} />
-{/*           
-          {isNoteOpen && (
-            <div className="note-overlay" onClick={() => setIsNoteOpen(false)}>
-              <div className="note-content" onClick={(e) => e.stopPropagation()}>
-                <div className="note-inner">
-
-                <p>在武汉的时候，我有一台破旧的松下 CD 机，一叠 CD。里头有林生祥、有 Chinese Football、有 Blur。全部放在桌上的架子里，没有收藏、没有评论、没有播放量，也没有排名。</p>
-                <p>我有点怀念从架子上抽出 CD 塞进机器，按播放键，按顺序听完一整张，再取出来，换下一张。</p>
-                <p>所以在这里，只有屏幕上晃动的专辑封面，和你亲手选的、在这一刻你最想听的那张专辑。</p>
-                  <p className="note-footer">另一种听歌的入口 by ZQ Yang</p>
-                </div>
-                <button className="close-note-btn" onClick={() => setIsNoteOpen(false)}>关闭</button>
-              </div>
-            </div>
-          )} */}
 
 {isNoteOpen && (
   <div className="note-overlay" onClick={() => setIsNoteOpen(false)}>
