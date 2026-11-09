@@ -204,6 +204,7 @@
   .detail-overlay {
     align-items: center;
     padding: 20px;
+    box-sizing: border-box;
   }
 
   .detail-content {

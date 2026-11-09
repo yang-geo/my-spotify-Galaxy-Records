@@ -24,6 +24,8 @@ html, body, #root, .App {
    2. Main Album Container & Floating Albums
    ========================================= */
 .album-container {
+  --card-w: 160px;
+  --gutter: 20px;
   position: absolute;
   top: 0;
   left: 0;
@@ -36,7 +38,7 @@ html, body, #root, .App {
 /* Single Album Card */
 .floating-album {
   position: absolute;
-  width: 160px;
+  width: var(--card-w);
   pointer-events: auto;
   text-decoration: none;
   color: white;
@@ -388,8 +390,9 @@ html, body, #root, .App {
   }
 
   /* C. Album Card Adjustments */
-  .floating-album {
-    width: 110px;
+  .album-container {
+    --card-w: 110px;
+    --gutter: 12px;
   }
   
   /* Always show info text (with gradient bg) */
